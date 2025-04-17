@@ -1,0 +1,132 @@
+
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <title>Gesundheits-Quiz</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f7f7f7;
+      padding: 20px;
+      max-width: 600px;
+      margin: auto;
+    }
+    .question-box {
+      background: white;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+    h2 {
+      font-size: 20px;
+    }
+    .answers button {
+      display: block;
+      margin: 10px 0;
+      padding: 10px;
+      width: 100%;
+      border: none;
+      border-radius: 5px;
+      background-color: #e0e0e0;
+      font-size: 16px;
+      cursor: pointer;
+    }
+    .answers button:hover {
+      background-color: #d0d0d0;
+    }
+    .feedback {
+      margin-top: 15px;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+  <div class="question-box">
+    <h2 id="question">Lade Frage...</h2>
+    <div class="answers" id="answers"></div>
+    <div class="feedback" id="feedback"></div>
+    <div id="score"></div>
+  </div>
+
+  <script>
+    const questions = [
+      {
+        question: "Wie viele Liter Wasser sollte ein Erwachsener täglich trinken?",
+        options: ["1 Liter", "2 Liter", "4 Liter", "5 Liter"],
+        answer: 1
+      },
+      {
+        question: "Welches Organ ist das größte im menschlichen Körper?",
+        options: ["Lunge", "Leber", "Haut", "Herz"],
+        answer: 2
+      },
+      {
+        question: "Wie viele Stunden Schlaf braucht ein Erwachsener im Durchschnitt?",
+        options: ["3–4 Stunden", "5–6 Stunden", "7–9 Stunden", "10–12 Stunden"],
+        answer: 2
+      },
+      {
+        question: "Was ist ein typisches Symptom bei Dehydration?",
+        options: ["Husten", "Kopfschmerzen", "Sehstörungen", "Fieber"],
+        answer: 1
+      },
+      {
+        question: "Was hilft am besten gegen Sonnenbrand?",
+        options: ["Kälte & Feuchtigkeit", "Wärme", "Öl", "Zucker"],
+        answer: 0
+      }
+    ];
+
+    let usedQuestions = [];
+    let correctAnswers = 0;
+    let currentQuestion = null;
+
+    function getRandomQuestion() {
+      if (usedQuestions.length === questions.length) {
+        document.getElementById("question").textContent = "Quiz abgeschlossen!";
+        document.getElementById("answers").innerHTML = "";
+        document.getElementById("feedback").textContent = "Du hast " + correctAnswers + " von " + questions.length + " Fragen richtig beantwortet.";
+        return;
+      }
+
+      let index;
+      do {
+        index = Math.floor(Math.random() * questions.length);
+      } while (usedQuestions.includes(index));
+
+      currentQuestion = index;
+      showQuestion(questions[index]);
+    }
+
+    function showQuestion(q) {
+      document.getElementById("question").textContent = q.question;
+      const answersDiv = document.getElementById("answers");
+      answersDiv.innerHTML = "";
+
+      q.options.forEach((opt, i) => {
+        const btn = document.createElement("button");
+        btn.textContent = opt;
+        btn.onclick = () => checkAnswer(i);
+        answersDiv.appendChild(btn);
+      });
+
+      document.getElementById("feedback").textContent = "";
+    }
+
+    function checkAnswer(selectedIndex) {
+      const q = questions[currentQuestion];
+      if (selectedIndex === q.answer) {
+        document.getElementById("feedback").textContent = "Richtig!";
+        usedQuestions.push(currentQuestion);
+        correctAnswers++;
+        setTimeout(getRandomQuestion, 1000);
+      } else {
+        document.getElementById("feedback").textContent = "Falsch, versuch’s nochmal!";
+      }
+    }
+
+    getRandomQuestion();
+  </script>
+</body>
+</html>
